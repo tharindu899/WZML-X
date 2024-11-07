@@ -104,7 +104,7 @@ class WZMLStyle:
     # ---------------------
 
     # async def restart(client, message): ---> __main__.py
-    RESTARTING = "ok <i>Restarting...</i>"
+    RESTARTING = "ok {<i>Restarting...</i>}"
     # ---------------------
 
     # async def restart_notification(): ---> __main__.py
