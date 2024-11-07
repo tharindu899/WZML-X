@@ -118,7 +118,7 @@ class WZMLStyle:
 
     # async def ping(client, message): ---> __main__.py
     PING = "<i>Starting Ping..</i>"
-    PING_VALUE = '<b>Pong</b>\n<code>{value} ms..</code>'
+    PING_VALUE = '<b>Ping</b>\n<code>{value} ms..</code>'
     # ---------------------
 
     # async def onDownloadStart(self): --> tasks_listener.py
