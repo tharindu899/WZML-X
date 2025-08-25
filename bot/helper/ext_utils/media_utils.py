@@ -702,15 +702,17 @@ class FFMpeg:
                     episode_str = match.group(1).upper()
                     # Normalize to S##E## format
                     if 'S' in episode_str and 'E' in episode_str:
-                        return episode_str
+                        # Ensure zero-padding
+                        s_match = re.search(r'S(\d{1,2})', episode_str)
+                        e_match = re.search(r'E(\d{1,2})', episode_str)
+                        if s_match and e_match:
+                            return f"S{int(s_match.group(1)):02d}E{int(e_match.group(1)):02d}"
                     elif 'SEASON' in episode_str.upper():
-                        # Extract season and episode numbers
                         season_match = re.search(r'SEASON\s*(\d+)', episode_str, re.IGNORECASE)
                         episode_match = re.search(r'EPISODE\s*(\d+)', episode_str, re.IGNORECASE)
                         if season_match and episode_match:
                             return f"S{int(season_match.group(1)):02d}E{int(episode_match.group(1)):02d}"
                     elif 'X' in episode_str:
-                        # Convert 1x01 to S01E01
                         parts = episode_str.split('X')
                         if len(parts) == 2:
                             return f"S{int(parts[0]):02d}E{int(parts[1]):02d}"
@@ -728,6 +730,10 @@ class FFMpeg:
             srt_files = sorted(glob.glob(ospath.join(dir, "*.srt")))
             LOGGER.info(f"Found {len(srt_files)} SRT files in directory")
             
+            if not srt_files:
+                LOGGER.error("No SRT files found in directory!")
+                return None
+            
             # Try episode ID matching first (most reliable)
             if video_episode_id:
                 for srt_file in srt_files:
@@ -736,7 +742,7 @@ class FFMpeg:
                     LOGGER.info(f"Checking SRT: {ospath.basename(srt_file)} -> Episode ID: {srt_episode_id}")
                     
                     if srt_episode_id == video_episode_id:
-                        LOGGER.info(f"✓ Episode matched: {ospath.basename(video_file)} with {ospath.basename(srt_file)}")
+                        LOGGER.info(f"✅ Episode matched: {ospath.basename(video_file)} with {ospath.basename(srt_file)}")
                         return srt_file
             
             # Fallback to exact base name matching (without extension)
@@ -746,7 +752,7 @@ class FFMpeg:
                 srt_clean_base = srt_base.replace('.srt', '')
                 
                 if video_clean_base == srt_clean_base:
-                    LOGGER.info(f"✓ Exact name matched: {ospath.basename(video_file)} with {ospath.basename(srt_file)}")
+                    LOGGER.info(f"✅ Exact name matched: {ospath.basename(video_file)} with {ospath.basename(srt_file)}")
                     return srt_file
             
             # More aggressive exact matching - remove common suffixes/prefixes
@@ -756,7 +762,7 @@ class FFMpeg:
                 srt_normalized = re.sub(r'\s*(1080p|720p|480p|x264|x265|BluRay|WEB-DL|HDTV).*', '', srt_base, flags=re.IGNORECASE)
                 
                 if video_normalized.strip() == srt_normalized.strip():
-                    LOGGER.info(f"✓ Normalized name matched: {ospath.basename(video_file)} with {ospath.basename(srt_file)}")
+                    LOGGER.info(f"✅ Normalized name matched: {ospath.basename(video_file)} with {ospath.basename(srt_file)}")
                     return srt_file
             
             # Last resort: partial matching with episode validation
@@ -769,100 +775,57 @@ class FFMpeg:
                     
                     if (video_series.lower().strip() == srt_series.lower().strip() and 
                         extract_episode_id(srt_base) == video_episode_id):
-                        LOGGER.info(f"✓ Series + episode matched: {ospath.basename(video_file)} with {ospath.basename(srt_file)}")
+                        LOGGER.info(f"✅ Series + episode matched: {ospath.basename(video_file)} with {ospath.basename(srt_file)}")
                         return srt_file
             
-            LOGGER.warning(f"✗ No matching subtitle found for: {ospath.basename(video_file)}")
+            # If no episode match, just use first available SRT
+            if srt_files:
+                LOGGER.warning(f"⚠️ No episode match found for {ospath.basename(video_file)}, using first available SRT: {ospath.basename(srt_files[0])}")
+                return srt_files[0]
+            
+            LOGGER.error(f"❌ No matching subtitle found for: {ospath.basename(video_file)}")
             return None
         
         self._total_time = (await get_media_info(f_path))[0]
         
-        # Handle wildcards and smart subtitle matching in ffmpeg command
-                # Simple fix to replace the wildcard processing section in _process_single_file method
-        
-        # Replace the entire wildcard processing loop with this:
-        
+        # FIXED: Handle wildcards and smart subtitle matching in ffmpeg command
         expanded_ffmpeg = []
         input_files = []
-        auto_matched_subtitle = None
-        
-        def get_episode_number(filename):
-            """Extract episode number from filename - simple version"""
-            import re
-            match = re.search(r'S\d{1,2}E(\d{1,2})', filename, re.IGNORECASE)
-            if match:
-                return int(match.group(1))
-            return None
-        
-        def find_matching_srt(video_file, dir):
-            """Find SRT file that matches the video episode"""
-            video_episode = get_episode_number(ospath.basename(video_file))
-            if not video_episode:
-                LOGGER.warning(f"No episode number found in: {ospath.basename(video_file)}")
-                return None
-            
-            LOGGER.info(f"Looking for SRT matching episode {video_episode}")
-            
-            # Get all SRT files
-            srt_files = glob.glob(ospath.join(dir, "*.srt"))
-            
-            for srt_file in srt_files:
-                srt_episode = get_episode_number(ospath.basename(srt_file))
-                LOGGER.info(f"Checking {ospath.basename(srt_file)} - Episode: {srt_episode}")
-                
-                if srt_episode == video_episode:
-                    LOGGER.info(f"✓ MATCH FOUND: Episode {video_episode}")
-                    return srt_file
-            
-            LOGGER.error(f"✗ No matching SRT found for episode {video_episode}")
-            return None
         
         # Process each item in ffmpeg command
         for i, item in enumerate(ffmpeg):
-          if '*' in item and not item.startswith('mltb'):
-              wildcard_pattern = ospath.join(dir, item)
-              matches = glob.glob(wildcard_pattern)
-              
-              if item == "*.srt" and matches:
-                  # FIXED: Smart SRT matching based on episode
-                  import re
-                  def get_episode_num(filename):
-                      match = re.search(r'S\d{1,2}E(\d{1,2})', filename, re.IGNORECASE)
-                      return int(match.group(1)) if match else None
-                  
-                  # Get episode number from main video file
-                  video_episode = get_episode_num(ospath.basename(f_path))
-                  matched_srt = None
-                  
-                  if video_episode:
-                      LOGGER.info(f"Looking for SRT matching episode {video_episode}")
-                      for srt_file in matches:
-                          srt_episode = get_episode_num(ospath.basename(srt_file))
-                          if srt_episode == video_episode:
-                              matched_srt = srt_file
-                              LOGGER.info(f"✓ Found matching SRT: {ospath.basename(srt_file)}")
-                              break
-                  
-                  # Use matched SRT or fall back to first one
-                  expanded_file = matched_srt if matched_srt else matches[0]
-                  if not matched_srt:
-                      LOGGER.warning(f"No episode match found, using: {ospath.basename(matches[0])}")
-              
-              elif matches:
-                  # For other wildcards, use first match (original behavior)
-                  expanded_file = matches[0]
-              else:
-                  expanded_ffmpeg.append(item)
-                  continue
-              
-              expanded_ffmpeg.append(expanded_file)
-              if i > 0 and ffmpeg[i-1] == "-i":
-                  input_files.append(expanded_file)
-          else:
-              expanded_ffmpeg.append(item)
+            if '*' in item and not item.startswith('mltb'):
+                wildcard_pattern = ospath.join(dir, item)
+                matches = glob.glob(wildcard_pattern)
+                
+                if item == "*.srt" and matches:
+                    # Smart SRT matching based on episode
+                    matched_srt = find_matching_subtitle(f_path, dir)
+                    if matched_srt:
+                        expanded_file = matched_srt
+                        LOGGER.info(f"Using matched SRT: {ospath.basename(matched_srt)}")
+                    else:
+                        expanded_file = matches[0]
+                        LOGGER.warning(f"No smart match found, using first SRT: {ospath.basename(matches[0])}")
+                elif matches:
+                    # For other wildcards, use first match
+                    expanded_file = matches[0]
+                    LOGGER.info(f"Expanded {item} to: {ospath.basename(expanded_file)}")
+                else:
+                    # No matches found for wildcard
+                    LOGGER.error(f"No files found matching pattern: {item}")
+                    return False
+                
+                expanded_ffmpeg.append(expanded_file)
+                # Track input files for deletion if needed
+                if i > 0 and ffmpeg[i-1] == "-i":
+                    input_files.append(expanded_file)
+            else:
+                expanded_ffmpeg.append(item)
         
+        # Update ffmpeg command with expanded paths
         ffmpeg = expanded_ffmpeg
-        LOGGER.info(f"Final command with matched SRT: {' '.join([ospath.basename(x) if '/' in x else x for x in ffmpeg])}")
+        LOGGER.info(f"Final expanded command: {' '.join([ospath.basename(x) if ospath.exists(x) else x for x in ffmpeg])}")
         
         # Find mltb placeholders for output files only
         indices = []
@@ -889,9 +852,7 @@ class FFMpeg:
             ffmpeg[index] = output
         
         # Log the final command for debugging
-        LOGGER.info(f"FFmpeg command: {' '.join(ffmpeg)}")
-        if auto_matched_subtitle:
-            LOGGER.info(f"Auto-matched subtitle: {ospath.basename(auto_matched_subtitle)}")
+        LOGGER.info(f"Final FFmpeg command: {' '.join([ospath.basename(x) if '/' in x else x for x in ffmpeg])}")
         
         if self._listener.is_cancelled:
             return False
@@ -935,7 +896,7 @@ class FFMpeg:
                 if await aiopath.exists(op):
                     await remove(op)
             return False
-  
+            
     async def convert_video(self, video_file, ext, retry=False):
         self.clear()
         self._total_time = (await get_media_info(video_file))[0]
