@@ -237,9 +237,9 @@ async def gen_pyro_string(_, message):
             api_id=api_id,
             api_hash=api_hash,
             workdir="/usr/src/app",
-            app_version=f"@WZML_X {get_version()}",
-            device_model="@WZML_X Bot V3",
-            system_version="@WZML_X WzPyro Server",
+            app_version=f"CineFlow {get_version()}",
+            device_model="CineFlow Bot V3",
+            system_version="CineFlow WzPyro Server",
         )
     except Exception as e:
         return await edit_message(
@@ -341,8 +341,8 @@ async def gen_pyro_string(_, message):
             "me",
             f"⌬ <b><u>WZGram Session Generated</u></b>\n\n"
             f"<code>{session_string}</code>\n\n"
-            f"<b>WZGram v{wzgram_version} | WZML-X {get_version()}</b>\n"
-            f"<b>Via <a href='https://github.com/SilentDemonSD/WZML-X'>WZML-X</a> [ @WZML_X ]</b>",
+            f"<b>WZGram v{wzgram_version} | CineFlow {get_version()}</b>\n"
+            f"<b>Via <a href='https://github.com/SilentDemonSD/WZML-X'>CineFlow</a> [ @WZML_X ]</b>",
             disable_web_page_preview=True,
         )
         await _safe_disconnect(pyro_client)

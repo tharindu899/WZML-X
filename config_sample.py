@@ -52,7 +52,7 @@ DISABLE_SEARCH = False
 DISABLE_YTDLP = False
 
 # Telegraph
-AUTHOR_NAME = "WZML-X"
+AUTHOR_NAME = "CineFlow"
 AUTHOR_URL = "https://t.me/WZML_X"
 
 # Task Limits
@@ -117,13 +117,13 @@ TIMEZONE = "Asia/Kolkata"
 
 # GDrive Tools
 GDRIVE_ID = ""
-GD_DESP = "Uploaded with WZ Bot"
+GD_DESP = "Uploaded with CineFlow Bot"
 IS_TEAM_DRIVE = False
 STOP_DUPLICATE = False
 INDEX_URL = ""
 
 # YT Tools
-YT_DESP = "Uploaded to YouTube by WZML-X bot"
+YT_DESP = "Uploaded to YouTube by CineFlow bot"
 YT_TAGS = ["telegram", "bot", "youtube"]  # or as a comma-separated string
 YT_CATEGORY_ID = 22
 YT_PRIVACY_STATUS = "unlisted"
