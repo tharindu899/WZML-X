@@ -3,435 +3,506 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Torrent File Selector</title>
-    <link rel="icon" href="https://graph.org/file/1a6ad157f55bc42b548df.png" type="image/jpg">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <title>CineFlow · File Selector</title>
+    <link rel="icon" href="https://i.ibb.co/670939S4/Cine-Flow-icon.png" type="image/png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Ubuntu", sans-serif;
-            list-style: none;
-            text-decoration: none;
-            outline: none !important;
-            color: white;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --bg: #282a36;
+            --bg-deep: #1e1f29;
+            --panel: #2f3140;
+            --panel-2: #363849;
+            --line: #44475a;
+            --fg: #f8f8f2;
+            --dim: #a0a7c4;
+            --comment: #6272a4;
+            --cyan: #8be9fd;
+            --green: #50fa7b;
+            --orange: #ffb86c;
+            --pink: #ff79c6;
+            --purple: #bd93f9;
+            --red: #ff5555;
+            --yellow: #f1fa8c;
+            --grad: linear-gradient(120deg, var(--purple) 0%, var(--pink) 100%);
         }
+
+        * { box-sizing: border-box; }
 
         body {
-            background-color: #0D1117;
+            font-family: 'Inter', sans-serif;
+            background:
+                radial-gradient(circle at 10% -10%, rgba(189, 147, 249, 0.16) 0%, transparent 45%),
+                radial-gradient(circle at 100% 0%, rgba(255, 121, 198, 0.12) 0%, transparent 40%),
+                var(--bg);
+            color: var(--fg);
+            margin: 0;
             min-height: 100vh;
-        }
-
-        header {
-            margin: 3vh 1vw;
-            padding: 0.5rem 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-radius: 30px;
-            background-color: #161B22;
-            border: 2px solid rgba(255, 255, 255, 0.11);
-        }
-
-        header:hover,
-        section:hover {
-            box-shadow: 0px 0px 15px black;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-        }
-
-        .brand img {
-            width: 2.5rem;
-            height: 2.5rem;
-            border: 2px solid black;
-            border-radius: 50%;
-        }
-
-        .name {
-            margin-left: 1vw;
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        .name a {
-            color: white;
-            text-decoration: none;
-        }
-
-        .social a {
-            font-size: 1.5rem;
-            color: white;
-            padding-left: 1vw;
-            text-decoration: none;
-        }
-
-        .social a:hover,
-        .brand:hover {
-            filter: invert(0.3);
-        }
-
-        #sticks {
-            margin: 0vh 1vw;
-            margin-bottom: 1vh;
-            padding: 1vh 3vw;
             display: flex;
             flex-direction: column;
-            border: 2px solid rgba(255, 255, 255, 0.11);
-            border-radius: 20px;
-            background-color: #161B22;
-            align-items: center;
         }
 
-        #sticks.stick {
+        code, .mono { font-family: 'JetBrains Mono', monospace; }
+        .hidden { display: none !important; }
+
+        /* ---------------- HEADER ---------------- */
+        .topbar {
             position: sticky;
             top: 0;
-            z-index: 10000;
-        }
-
-        #sticks h4 {
-            margin: 0.3rem 0;
-        }
-
-        section {
-            margin: 0vh 1vw;
-            margin-bottom: 10vh;
-            padding: 1vh 3vw;
+            z-index: 30;
             display: flex;
-            flex-direction: column;
-            border: 2px solid rgba(255, 255, 255, 0.11);
-            border-radius: 20px;
-            background-color: #161B22;
-        }
-
-        li:nth-child(1) {
-            padding: 1rem 1rem 0.5rem 1rem;
-        }
-
-        li:nth-child(n+1) {
-            padding-left: 1rem;
-        }
-
-        li label {
-            padding-left: 0.5rem;
-        }
-
-        li {
-            padding-bottom: 0.5rem;
-        }
-
-        span.arrow {
-            margin-right: 0.5rem;
-            cursor: pointer;
-            user-select: none;
-            transition: transform 200ms ease-out;
-        }
-
-        span.arrow.active {
-            transform: rotate(90deg);
-            display: inline-block;
-        }
-
-        ul.tree {
-            margin: 1vh 1vw 1vh 1vw;
-            padding: 0 0 0.5rem 0;
-            border: 2px solid black;
-            border-radius: 20px;
-            background-color: #1c2129;
-            overflow: hidden;
-        }
-
-        input[type="checkbox"] {
-            cursor: pointer;
-            user-select: none;
-        }
-
-        input[type="submit"],
-        input[type="button"],
-        button {
-            border-radius: 20px;
-            margin: 2vh auto 1vh auto;
-            width: 50%;
-            display: block;
-            height: 5.5vh;
-            border: 2px solid rgba(255, 255, 255, 0.11);
-            background-color: #0D1117;
-            color: white;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 200ms ease;
-        }
-
-        input[type="submit"]:hover,
-        input[type="submit"]:focus,
-        input[type="button"]:hover,
-        button:hover {
-            background-color: rgba(255, 255, 255, 0.068);
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            border-radius: 20px;
-            outline: none;
-            width: 50vw;
-            height: 4vh;
-            padding: 1rem;
-            margin: 0.5vh;
-            border: 2px solid rgba(255, 255, 255, 0.11);
-            background-color: #3e475531;
-            box-shadow: inset 0px 0px 10px black;
-            color: white;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            border-color: rgba(255, 255, 255, 0.404);
-        }
-
-        .pin-form {
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            padding: 2vh 0;
+            gap: 0.6rem;
+            padding: 0.6rem 0.85rem;
+            background: rgba(30, 31, 41, 0.75);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--line);
         }
 
-        .pin-form label {
-            font-size: larger;
-            font-weight: 500;
-            margin-bottom: 1vh;
+        .topbar-brand { display: flex; align-items: center; }
+        .topbar-brand img { height: 30px; width: auto; object-fit: contain; }
+
+        main { flex-grow: 1; padding: 0.6rem 0.6rem 1rem; max-width: 660px; margin: 0 auto; width: 100%; }
+
+        footer {
+            padding: 0.9rem;
+            text-align: center;
+            border-top: 1px solid var(--line);
+            color: var(--comment);
+            font-size: 0.72rem;
+            margin-top: auto;
         }
 
-        .pin-form input[type="text"] {
-            width: 50%;
+        footer a { color: var(--dim); margin: 0 0.4rem; }
+        footer a:hover { color: var(--purple); }
+
+        /* ---------------- PIN SCREEN ---------------- */
+        #pinEntry {
+            margin-top: 1.5rem;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
         }
 
-        .pin-form button {
-            width: 50%;
+        .pin-ring {
+            width: 58px; height: 58px;
+            margin: 0 auto 0.85rem;
+            border-radius: 50%;
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            background: conic-gradient(from 180deg, var(--purple), var(--pink), var(--purple));
+            animation: spin 6s linear infinite;
+        }
+
+        .pin-ring::before { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--bg-deep); }
+        .pin-ring i { position: relative; z-index: 1; font-size: 1.15rem; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        #pinEntry h2 { font-size: 1.05rem; font-weight: 800; margin: 0 0 0.3rem; }
+        #pinEntry p.sub { color: var(--dim); font-size: 0.76rem; line-height: 1.4; margin-bottom: 0.9rem; }
+
+        #pinInput {
+            width: 100%;
+            background: var(--panel);
+            border: 1.5px solid var(--line);
+            border-radius: 0.6rem;
+            color: var(--fg);
+            padding: 0.65rem 0.8rem 0.65rem 2.3rem;
+            font-size: 0.95rem;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.25em;
+            outline: none;
+            margin-bottom: 0.9rem;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        #pinInput:focus { border-color: var(--purple); box-shadow: 0 0 0 4px rgba(189, 147, 249, 0.18); }
+        #pinInput::placeholder { letter-spacing: normal; color: var(--comment); font-size: 0.85rem; font-family: 'Inter', sans-serif; }
+
+        .pin-input-wrap { position: relative; }
+        .pin-input-wrap i { position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: var(--comment); font-size: 0.85rem; }
+
+        .btn {
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            border: none;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--grad);
+            color: var(--bg-deep);
+            font-size: 0.85rem;
+            padding: 0.6rem 1rem;
+            border-radius: 0.65rem;
+            box-shadow: 0 8px 20px rgba(255, 121, 198, 0.28);
+        }
+
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(255, 121, 198, 0.4); }
+
+        .btn-secondary {
+            background: var(--panel-2);
+            color: var(--fg);
+            border: 1px solid var(--line);
+            font-size: 0.8rem;
+            padding: 0.55rem 0.9rem;
+            border-radius: 0.6rem;
+        }
+
+        .btn-secondary:hover { background: var(--line); }
+
+        /* ---------------- STATS / TOOLBAR ---------------- */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.4rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .stat-card {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 0.65rem;
+            padding: 0.4rem 0.55rem;
+        }
+
+        .stat-card .label { font-size: 0.6rem; color: var(--comment); text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; margin-bottom: 0.12rem; display: flex; align-items: center; gap: 0.28rem; }
+        .stat-card .value { font-size: 0.85rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+        .stat-card.files .label i { color: var(--cyan); }
+        .stat-card.size .label i { color: var(--purple); }
+        .stat-card.actions { display: flex; align-items: center; justify-content: center; gap: 0.3rem; padding: 0.3rem; }
+
+        .pill-btn {
+            flex: 1;
+            background: var(--panel-2);
+            border: 1px solid var(--line);
+            border-radius: 0.5rem;
+            color: var(--fg);
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 0.3rem 0.15rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 0.25rem;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .pill-btn:hover { background: var(--line); }
+        .pill-btn i.all { color: var(--green); }
+        .pill-btn i.inv { color: var(--yellow); }
+        .pill-btn i.every { color: var(--purple); }
+
+        /* ---------------- TREE ---------------- */
+        #fileManager { padding-bottom: 0.5rem; }
+
+        /* The one and only box — every row lives inside this, none of
+           them get their own border/background. */
+        #fileTreeWrap {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: 0.75rem;
+            padding: 0.5rem 0.6rem;
+        }
+
+        #fileTree { display: flex; flex-direction: column; }
+
+        .tree-node { display: flex; flex-direction: column; }
+
+        /* Nested children hang off a dashed vertical guide line, like a
+           classic file-explorer tree. */
+        .tree-branch {
+            display: flex;
+            flex-direction: column;
+            margin-left: 0.7rem;
+            padding-left: 0.85rem;
+            border-left: 1.5px dashed var(--line);
         }
 
         .file-tree-item {
             display: flex;
             align-items: center;
-            padding: 0.4rem 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            transition: background-color 0.2s;
+            gap: 0.5rem;
+            padding: 0.32rem 0.3rem;
+            border-radius: 0.4rem;
+            cursor: default;
+            position: relative;
+            transition: background 0.12s ease;
         }
 
-        .file-tree-item:hover {
-            background-color: rgba(255, 255, 255, 0.05);
+        .file-tree-item:hover { background: var(--panel-2); }
+        .file-tree-item.folder-row { cursor: pointer; }
+
+        /* Horizontal stub connecting the row to the vertical guide line. */
+        .tree-branch > .tree-node > .file-tree-item::before {
+            content: "";
+            position: absolute;
+            left: -0.85rem;
+            top: 50%;
+            width: 0.65rem;
+            height: 1.5px;
+            background: var(--line);
         }
 
-        .file-tree-item .icon {
-            margin-right: 0.5rem;
-        }
-
-        .file-tree-item .file-info {
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-            min-width: 0;
-        }
-
-        .file-tree-item .file-name {
-            word-break: break-word;
-            cursor: pointer;
-        }
-
-        .file-tree-item.folder .file-name {
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .file-tree-item .size-info {
-            font-size: 0.8em;
-            color: #8b949e;
-        }
-
-        .edit-btn {
-            background: none;
-            border: none;
-            color: inherit;
-            cursor: pointer;
-            font-size: 0.9em;
-            padding: 0;
-            margin-left: 0.5rem;
-        }
-
-        .edit-btn:hover {
-            text-decoration: underline;
-        }
-
-        .checkbox-wrapper {
+        /* ---------------- TREE INDENT / EXPAND ---------------- */
+        .tree-toggle {
+            flex-shrink: 0;
+            width: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
+            color: var(--comment);
+            font-size: 0.68rem;
+            transition: transform 0.15s ease, color 0.15s ease;
         }
 
+        .tree-toggle.clickable { cursor: pointer; }
+        .tree-toggle.clickable:hover { color: var(--purple); }
+        .tree-toggle.expanded { transform: rotate(90deg); }
+
+        .checkbox-wrapper { flex-shrink: 0; display: flex; align-items: center; }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 17px; height: 17px;
+            border-radius: 50%;
+            border: 1.5px solid var(--comment);
+            cursor: pointer;
+            position: relative;
+            background: transparent;
+            transition: all 0.15s ease;
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked {
+            background: var(--grad);
+            border-color: transparent;
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked::after {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            font-size: 0.5rem;
+            color: var(--bg-deep);
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:indeterminate {
+            background: var(--panel-2);
+            border-color: var(--purple);
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:indeterminate::after {
+            content: "";
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px; height: 2px;
+            background: var(--purple);
+            border-radius: 1px;
+        }
+
+        .icon { font-size: 0.85rem; width: 16px; text-align: center; flex-shrink: 0; }
+        .folder-row .icon { color: var(--orange); }
+        .kind-video .icon { color: var(--pink); }
+        .kind-sub .icon { color: var(--cyan); }
+        .kind-text .icon { color: var(--yellow); }
+        .kind-image .icon { color: var(--green); }
+        .kind-archive .icon { color: var(--red); }
+
+        .file-info { display: flex; flex-direction: column; flex-grow: 1; min-width: 0; }
+        .file-info-row { display: flex; justify-content: space-between; align-items: center; }
+
+        .file-name { font-size: 0.72rem; font-weight: 600; word-break: break-word; font-family: 'JetBrains Mono', monospace; line-height: 1.3; }
+        .folder-name { color: var(--fg); }
+
+        .size-info { font-size: 0.62rem; color: var(--comment); margin-top: 0.15rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+
+        .edit-btn { background: none; border: none; cursor: pointer; font-size: 0.68rem; color: var(--purple); padding: 0; }
+        .edit-btn:hover { text-decoration: underline; }
+
+        .progress-track {
+            flex-grow: 1;
+            height: 3px;
+            border-radius: 2px;
+            background: var(--line);
+            overflow: hidden;
+            max-width: 55px;
+        }
+
+        .progress-fill { height: 100%; background: var(--grad); }
+
+        /* ---------------- CONFIRM FAB ---------------- */
+        .confirm-fab-wrap {
+            position: sticky;
+            bottom: 0.6rem;
+            display: flex;
+            justify-content: center;
+            z-index: 25;
+            margin-top: 0.6rem;
+            padding-top: 0.9rem;
+            background: linear-gradient(to top, var(--bg) 60%, transparent);
+        }
+
+        .confirm-fab {
+            background: var(--grad);
+            border: none;
+            color: var(--bg-deep);
+            font-weight: 800;
+            font-size: 0.78rem;
+            padding: 0.6rem 1.1rem;
+            border-radius: 999px;
+            cursor: pointer;
+            display: flex; align-items: center; gap: 0.4rem;
+            box-shadow: 0 8px 22px rgba(255, 121, 198, 0.4);
+            transition: transform 0.15s ease;
+        }
+
+        .confirm-fab:hover { transform: translateY(-2px) scale(1.02); }
+        .confirm-fab .badge { background: rgba(30, 31, 41, 0.35); border-radius: 999px; padding: 0.1rem 0.45rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; }
+
+        /* ---------------- MODAL ---------------- */
         .modal {
             display: none;
             position: fixed;
             z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(20, 20, 28, 0.6);
+            backdrop-filter: blur(3px);
         }
 
         .modal-content {
-            background-color: #161B22;
-            border: 2px solid rgba(255, 255, 255, 0.11);
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 20px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            color: var(--fg);
+            margin: 20% auto;
+            padding: 1.25rem;
+            border-radius: 0.9rem;
             width: 90%;
-            max-width: 500px;
+            max-width: 380px;
         }
 
-        .modal h2 {
-            margin-bottom: 1rem;
-        }
-
-        .modal p {
-            margin-bottom: 1rem;
-        }
+        .modal-content h2 { font-size: 1rem; font-weight: 800; margin: 0 0 0.75rem; }
+        .modal-content p { font-size: 0.85rem; color: var(--dim); margin: 0; }
 
         .edit-name-input {
-            background-color: transparent;
-            border: none;
-            border-bottom: 1px solid white;
-            color: white;
-            font-size: inherit;
-            padding: 2px 4px;
-            margin-right: 8px;
+            background: var(--panel-2);
+            border: 1.5px solid var(--line);
+            border-radius: 0.5rem;
+            color: var(--fg);
+            font-size: 0.85rem;
+            padding: 0.5rem 0.65rem;
             width: 100%;
-        }
-
-        .edit-name-input:focus {
             outline: none;
-            border-bottom: 2px solid white;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .pin-entry {
-            animation: fadeIn 0.5s;
-        }
+        .edit-name-input:focus { border-color: var(--purple); }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .modal-footer-row { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        .modal-footer-row .btn-primary, .modal-footer-row .btn-secondary { width: auto; flex: 1; }
 
-        .pin-entry.fadeOut {
-            animation: fadeOut 0.5s;
-        }
+        .pin-entry.fadeOut { animation: fadeOut 0.4s forwards; }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        .pin-entry { animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-        }
-
-        .modal-footer {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .modal-footer button {
-            margin: 0;
-            width: auto;
-            padding: 0 1.5rem;
-            height: 4vh;
-        }
-
-        @media (max-width: 768px) {
-            input[type="submit"],
-            input[type="button"],
-            button {
-                width: 100%;
-            }
-            .pin-form input[type="text"],
-            .pin-form button {
-                width: calc(100% - 0.3rem);
-            }
+        @media (max-width: 420px) {
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .stat-card.actions { grid-column: span 2; }
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <div class="brand">
-            <img src="https://graph.org/file/1a6ad157f55bc42b548df.png" alt="logo">
-            <h2 class="name"><a href="https://t.me/WZML_X">Torrent Selector</a></h2>
-        </div>
-        <div class="social">
-            <a href="https://www.github.com/SilentDemonSD/WZML-X"><i class="fab fa-github"></i></a>
-            <a href="https://t.me/WZML_X"><i class="fab fa-telegram"></i></a>
-        </div>
+    <header class="topbar">
+        <div class="topbar-brand"><img src="https://i.ibb.co/BHYKmvBH/Cine-Flow-barand.png" alt="CineFlow"></div>
     </header>
 
-    <div id="sticks">
-        <h4>Selected files: <b id="checked_files">0</b> of <b id="total_files">0</b></h4>
-        <h4>Selected files size: <b id="checked_size">0</b> of <b id="total_size">0</b></h4>
-    </div>
-
-    <section>
+    <main>
         <div id="pinEntry" class="pin-entry">
-            <form id="pinForm" class="pin-form" onsubmit="return false">
-                <label for="pinInput">Pin Code:</label>
+            <div class="pin-ring"><i class="fa-solid fa-lock"></i></div>
+            <h2>Enter PIN</h2>
+            <p class="sub">Enter the code you got from Telegram to access the torrent</p>
+            <div class="pin-input-wrap">
+                <i class="fa-solid fa-key"></i>
                 <input type="text" id="pinInput"
                     title="Enter the code that you have got from Telegram to access the Torrent"
-                    placeholder="Enter the code that you have got from Telegram to access the Torrent">
-                <button type="submit" id="submitPin">Submit</button>
-            </form>
+                    placeholder="Enter PIN">
+            </div>
+            <button id="submitPin" class="btn btn-primary"><i class="fa-solid fa-unlock"></i> Submit</button>
         </div>
 
-        <div id="fileManager" style="display: none;">
-            <div id="fileTree" class="file-tree"></div>
-            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1vh 0;">
-                <button type="button" id="selectAllBtn" style="width: auto; padding: 0 1rem; height: 4vh; margin: 0;">Select All</button>
-                <button type="button" id="invertSelectionBtn" style="width: auto; padding: 0 1rem; height: 4vh; margin: 0;">Invert</button>
-                <button type="button" id="selectEverythingBtn" style="width: auto; padding: 0 1rem; height: 4vh; margin: 0;">Select Everything</button>
+        <div id="fileManager" class="hidden">
+            <div class="stats-row">
+                <div class="stat-card files">
+                    <div class="label"><i class="fa-solid fa-circle-check"></i> Selected</div>
+                    <div class="value"><span id="selectedCount">0</span> / <span id="totalCount">0</span></div>
+                </div>
+                <div class="stat-card size">
+                    <div class="label"><i class="fa-solid fa-database"></i> Size</div>
+                    <div class="value"><span id="selectedSize">0 B</span> / <span id="totalSize">0 B</span></div>
+                </div>
+                <div class="stat-card actions">
+                    <button id="selectAllBtn" class="pill-btn"><i class="fa-solid fa-check-double all"></i> All</button>
+                    <button id="invertSelectionBtn" class="pill-btn"><i class="fa-solid fa-shuffle inv"></i> Invert</button>
+                    <button id="selectEverythingBtn" class="pill-btn"><i class="fa-solid fa-layer-group every"></i> Every</button>
+                </div>
             </div>
-            <button type="button" id="submitBtn">Submit Selection</button>
+            <div id="fileTreeWrap">
+                <div id="fileTree"></div>
+            </div>
+
+            <div class="confirm-fab-wrap hidden" id="confirmFabWrap">
+                <button id="submitBtn" class="confirm-fab"><i class="fa-solid fa-paper-plane"></i> Confirm Selection <span class="badge" id="fabCount">0</span></button>
+            </div>
         </div>
-    </section>
+    </main>
+
+    <footer>
+        &copy; 2026 CineFlow
+        <a href="https://github.com/tharindu899" target="_blank"><i class="fab fa-github"></i></a>
+        <a href="https://t.me/CineFlow_Update" target="_blank"><i class="fab fa-telegram"></i></a>
+    </footer>
 
     <div id="reusableModal" class="modal">
         <div class="modal-content">
-            <h2 id="modalTitle" style="margin-bottom: 1rem;"></h2>
+            <h2 id="modalTitle"></h2>
             <div id="modalBody"></div>
-            <div id="modalFooter" class="modal-footer"></div>
+            <div id="modalFooter" class="mt-4"></div>
         </div>
     </div>
 
     <script>
         const fileTree = document.getElementById('fileTree');
+        const selectedCount = document.getElementById('selectedCount');
+        const totalCount = document.getElementById('totalCount');
+        const selectedSize = document.getElementById('selectedSize');
+        const totalSize = document.getElementById('totalSize');
         const selectAllBtn = document.getElementById('selectAllBtn');
         const submitBtn = document.getElementById('submitBtn');
         const pinEntry = document.getElementById('pinEntry');
         const pinInput = document.getElementById('pinInput');
         const submitPin = document.getElementById('submitPin');
         const fileManager = document.getElementById('fileManager');
+        const confirmFabWrap = document.getElementById('confirmFabWrap');
+        const fabCount = document.getElementById('fabCount');
         const reusableModal = document.getElementById('reusableModal');
         const modalTitle = document.getElementById('modalTitle');
         const modalBody = document.getElementById('modalBody');
         const modalFooter = document.getElementById('modalFooter');
-        const checkedFilesEl = document.getElementById('checked_files');
-        const totalFilesEl = document.getElementById('total_files');
-        const checkedSizeEl = document.getElementById('checked_size');
-        const totalSizeEl = document.getElementById('total_size');
-
         pinInput.focus();
+
         const urlParams = new Proxy(new URLSearchParams(window.location.search), {
             get: (searchParams, prop) => searchParams.get(prop),
         });
@@ -439,19 +510,34 @@
             pinInput.value = urlParams.pin;
             setTimeout(() => submitPin.click(), 0);
         }
-        let currentFolder = null;
+
         let files = [];
         let allowEdit = false;
 
         function formatSize(size) {
             const units = ['B', 'KB', 'MB', 'GB', 'TB'];
             let i = 0;
-            while (size >= 1024 && i < units.length - 1) {
-                size /= 1024;
-                i++;
-            }
+            while (size >= 1024 && i < units.length - 1) { size /= 1024; i++; }
             return `${size.toFixed(2)} ${units[i]}`;
         }
+
+        function fileKind(name) {
+            const ext = (name.split('.').pop() || '').toLowerCase();
+            if (['mp4', 'mkv', 'avi', 'mov', 'webm', 'm4v'].includes(ext)) return 'video';
+            if (['srt', 'ass', 'vtt', 'sub'].includes(ext)) return 'sub';
+            if (['txt', 'nfo'].includes(ext)) return 'text';
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) return 'image';
+            if (['zip', 'rar', '7z'].includes(ext)) return 'archive';
+            return 'text';
+        }
+
+        const KIND_ICON = {
+            video: 'fa-solid fa-film',
+            sub: 'fa-solid fa-closed-captioning',
+            text: 'fa-solid fa-file-lines',
+            image: 'fa-solid fa-image',
+            archive: 'fa-solid fa-file-zipper',
+        };
 
         function calculateFolderSize(folder) {
             let totalSize = 0;
@@ -467,90 +553,142 @@
             return totalSize;
         }
 
+        // Folders default to collapsed the first time they're seen; expand
+        // state then lives on the node itself so it survives re-renders.
+        function ensureExpandState(nodes) {
+            nodes.forEach(node => {
+                if (node.type === 'folder') {
+                    if (node.expanded === undefined) node.expanded = false;
+                    ensureExpandState(node.children);
+                }
+            });
+        }
+
+        function toggleExpand(node) {
+            node.expanded = !node.expanded;
+            renderFileTree(files);
+        }
+
         function renderFileTree(nodes) {
             fileTree.innerHTML = '';
-            if (currentFolder) {
-                const backButton = document.createElement('div');
-                backButton.className = 'file-tree-item folder';
-                backButton.innerHTML = '<span class="icon">📁</span>...';
-                backButton.addEventListener('click', goBack);
-                fileTree.appendChild(backButton);
-            }
-            nodes.forEach(node => {
-                const div = document.createElement('div');
-                div.className = 'file-tree-item';
-                const checkboxWrapper = document.createElement('div');
-                checkboxWrapper.className = 'checkbox-wrapper';
-
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.id = node.id;
-                checkbox.checked = node.selected;
-                checkbox.addEventListener('change', () => toggleFile(node));
-
-                checkboxWrapper.appendChild(checkbox);
-
-                const icon = document.createElement('span');
-                icon.className = 'icon';
-                icon.textContent = node.type === 'folder' ? '📁' : '📄';
-
-                const fileInfo = document.createElement('div');
-                fileInfo.className = 'file-info';
-
-                const nameElement = document.createElement('div');
-                nameElement.className = 'file-name cursor-pointer';
-                nameElement.textContent = node.name;
-
-                const sizeInfo = document.createElement('div');
-                sizeInfo.className = 'size-info';
-                const size = node.type === 'folder' ? calculateFolderSize(node) : node.size;
-                sizeInfo.textContent = formatSize(size);
-                if (node.type === 'file') {
-                    if (allowEdit) {
-                        const editBtn = document.createElement('span');
-                        editBtn.textContent = ' | Edit ✏️';
-                        editBtn.className = 'edit-btn';
-                        sizeInfo.appendChild(editBtn);
-                    }
-                    if (node.progress !== undefined) {
-                        const progressText = document.createElement('span');
-                        progressText.textContent = ` | Progress: ${node.progress}%`;
-                        sizeInfo.appendChild(progressText);
-                    }
-                }
-                div.addEventListener('click', (event) => {
-                    if (event.target.className === 'file-name cursor-pointer') {
-                        toggleFile(node);
-                    } else if (event.target.className === 'edit-btn') {
-                        openEditFileNameModal(node);
-                    }
-                });
-
-                fileInfo.appendChild(nameElement);
-                fileInfo.appendChild(sizeInfo);
-
-                div.appendChild(checkboxWrapper);
-                div.appendChild(icon);
-                div.appendChild(fileInfo);
-
-                if (node.type === 'folder') {
-                    div.classList.add('folder');
-                    nameElement.classList.add('folder', 'folder-name');
-                    nameElement.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        openFolder(node);
-                    });
-                    if (areAllChildrenSelected(node)) {
-                        checkbox.checked = true;
-                    } else if (areSomeChildrenSelected(node)) {
-                        checkbox.indeterminate = true;
-                    }
-                }
-
-                fileTree.appendChild(div);
-            });
+            nodes.forEach(node => fileTree.appendChild(buildTreeNode(node)));
             updateSelectAllButtonText();
             updateSelectEverythingButtonText();
+        }
+
+        function buildTreeNode(node) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'tree-node';
+
+            const div = document.createElement('div');
+            div.className = 'file-tree-item';
+
+            const toggle = document.createElement('span');
+            toggle.className = 'tree-toggle';
+
+            const checkboxWrapper = document.createElement('div');
+            checkboxWrapper.className = 'checkbox-wrapper';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = node.id;
+            checkbox.checked = node.selected;
+            checkbox.addEventListener('change', () => toggleFile(node));
+            checkboxWrapper.appendChild(checkbox);
+
+            const icon = document.createElement('span');
+            icon.className = 'icon';
+
+            const fileInfo = document.createElement('div');
+            fileInfo.className = 'file-info';
+
+            const nameElement = document.createElement('div');
+            nameElement.className = 'file-name cursor-pointer';
+            nameElement.textContent = node.name;
+
+            const sizeInfo = document.createElement('div');
+            sizeInfo.className = 'size-info';
+            const size = node.type === 'folder' ? calculateFolderSize(node) : node.size;
+
+            if (node.type === 'folder') {
+                div.classList.add('folder-row');
+                icon.innerHTML = '<i class="fa-solid fa-folder"></i>';
+                const sizeSpan = document.createElement('span');
+                sizeSpan.textContent = formatSize(size);
+                sizeInfo.appendChild(sizeSpan);
+
+                toggle.classList.add('clickable');
+                if (node.expanded) toggle.classList.add('expanded');
+                toggle.innerHTML = '<i class="fa-solid fa-chevron-right"></i>';
+                toggle.addEventListener('click', (e) => { e.stopPropagation(); toggleExpand(node); });
+            } else {
+                const kind = fileKind(node.name);
+                div.classList.add('kind-' + kind);
+                icon.innerHTML = `<i class="${KIND_ICON[kind]}"></i>`;
+
+                const sizeSpan = document.createElement('span');
+                sizeSpan.textContent = formatSize(size);
+                sizeInfo.appendChild(sizeSpan);
+
+                if (node.progress !== undefined) {
+                    const track = document.createElement('div');
+                    track.className = 'progress-track';
+                    const fill = document.createElement('div');
+                    fill.className = 'progress-fill';
+                    fill.style.width = `${node.progress}%`;
+                    track.appendChild(fill);
+                    sizeInfo.appendChild(track);
+
+                    const progText = document.createElement('span');
+                    progText.textContent = `${node.progress}%`;
+                    sizeInfo.appendChild(progText);
+                }
+            }
+
+            if (allowEdit) {
+                const editBtn = document.createElement('span');
+                editBtn.innerHTML = '<i class="fa-solid fa-pen"></i> Edit';
+                editBtn.className = 'edit-btn';
+                sizeInfo.appendChild(editBtn);
+            }
+
+            div.addEventListener('click', (event) => {
+                if (event.target.closest('.edit-btn')) {
+                    openEditFileNameModal(node);
+                } else if (event.target.closest('.file-name') && node.type !== 'folder') {
+                    toggleFile(node);
+                } else if (event.target.closest('.file-name') && node.type === 'folder') {
+                    toggleExpand(node);
+                }
+            });
+
+            fileInfo.appendChild(nameElement);
+            fileInfo.appendChild(sizeInfo);
+
+            div.appendChild(toggle);
+            div.appendChild(checkboxWrapper);
+            div.appendChild(icon);
+            div.appendChild(fileInfo);
+
+            if (node.type === 'folder') {
+                nameElement.classList.add('folder', 'folder-name');
+                if (areAllChildrenSelected(node)) {
+                    checkbox.checked = true;
+                } else if (areSomeChildrenSelected(node)) {
+                    checkbox.indeterminate = true;
+                }
+            }
+
+            wrapper.appendChild(div);
+
+            if (node.type === 'folder' && node.expanded) {
+                const branch = document.createElement('div');
+                branch.className = 'tree-branch';
+                node.children.forEach(child => branch.appendChild(buildTreeNode(child)));
+                wrapper.appendChild(branch);
+            }
+
+            return wrapper;
         }
 
         function areAllChildrenSelected(folder) {
@@ -570,7 +708,7 @@
             }
             updateParentFolders(node);
             updateStats();
-            renderFileTree(currentFolder ? currentFolder.children : files);
+            renderFileTree(files);
         }
 
         function toggleFolder(folder, isSelected) {
@@ -598,9 +736,7 @@
         function findParent(root, id) {
             if (root && root.children) {
                 for (const child of root.children) {
-                    if (child.id === id) {
-                        return root;
-                    }
+                    if (child.id === id) return root;
                     const found = findParent(child, id);
                     if (found) return found;
                 }
@@ -610,96 +746,58 @@
 
         function updateStats() {
             const stats = calculateStats(files);
-            checkedFilesEl.textContent = stats.selectedCount;
-            totalFilesEl.textContent = stats.totalCount;
-            checkedSizeEl.textContent = formatSize(stats.selectedSize);
-            totalSizeEl.textContent = formatSize(stats.totalSize);
+            selectedCount.textContent = stats.selectedCount;
+            totalCount.textContent = stats.totalCount;
+            selectedSize.textContent = formatSize(stats.selectedSize);
+            totalSize.textContent = formatSize(stats.totalSize);
+            fabCount.textContent = stats.selectedCount;
         }
 
         function calculateStats(nodes) {
-            let selectedCount = 0;
-            let totalCount = 0;
-            let selectedSize = 0;
-            let totalSize = 0;
-
+            let selectedCountN = 0, totalCountN = 0, selectedSizeN = 0, totalSizeN = 0;
             const queue = [...nodes];
             while (queue.length > 0) {
                 const node = queue.pop();
                 if (node.type === 'file') {
-                    totalCount++;
-                    totalSize += node.size;
-                    if (node.selected) {
-                        selectedCount++;
-                        selectedSize += node.size;
-                    }
+                    totalCountN++;
+                    totalSizeN += node.size;
+                    if (node.selected) { selectedCountN++; selectedSizeN += node.size; }
                 }
-                if (node.children) {
-                    queue.push(...node.children);
-                }
+                if (node.children) queue.push(...node.children);
             }
-
-            return { selectedCount, totalCount, selectedSize, totalSize };
-        }
-
-        function openFolder(folder) {
-            currentFolder = folder;
-            renderFileTree(folder.children);
-            updateStats();
-        }
-
-        function goBack() {
-            if (currentFolder) {
-                const parent = findParent(files[0], currentFolder.id);
-                if (parent) {
-                    currentFolder = parent;
-                    renderFileTree(parent.children);
-                } else {
-                    currentFolder = null;
-                    renderFileTree(files);
-                }
-                updateStats();
-            }
+            return { selectedCount: selectedCountN, totalCount: totalCountN, selectedSize: selectedSizeN, totalSize: totalSizeN };
         }
 
         function selectAll() {
-            const nodes = currentFolder ? currentFolder.children : files;
+            const nodes = files;
             const allSelected = nodes.every(node => node.type === 'folder' ? areAllChildrenSelected(node) : node.selected);
             nodes.forEach(node => {
-                if (node.type === 'folder') {
-                    toggleFolder(node, !allSelected);
-                } else {
-                    node.selected = !allSelected;
-                }
+                if (node.type === 'folder') { toggleFolder(node, !allSelected); }
+                else { node.selected = !allSelected; }
             });
             updateStats();
             renderFileTree(nodes);
             updateSelectAllButtonText();
         }
 
-        function invertSelection() {
-            const nodes = currentFolder ? currentFolder.children : files;
-            nodes.forEach(node => {
-                if (node.type === 'folder') {
-                    invertFolderSelection(node);
-                } else {
-                    node.selected = !node.selected;
-                }
-            });
-            updateStats();
-            renderFileTree(nodes);
-        }
-
         function invertFolderSelection(folder) {
             folder.selected = !folder.selected;
             if (folder.children) {
                 folder.children.forEach(child => {
-                    if (child.type === 'folder') {
-                        invertFolderSelection(child);
-                    } else {
-                        child.selected = !child.selected;
-                    }
+                    if (child.type === 'folder') invertFolderSelection(child);
+                    else child.selected = !child.selected;
                 });
             }
+        }
+
+        function invertSelection() {
+            const nodes = files;
+            nodes.forEach(node => {
+                if (node.type === 'folder') invertFolderSelection(node);
+                else node.selected = !node.selected;
+            });
+            updateStats();
+            renderFileTree(nodes);
         }
 
         function selectEverything() {
@@ -708,9 +806,7 @@
                 nodes.forEach(node => {
                     if (node.type === 'folder') {
                         node.selected = select;
-                        if (node.children) {
-                            recursiveSelect(node.children, select);
-                        }
+                        if (node.children) recursiveSelect(node.children, select);
                     } else {
                         node.selected = select;
                     }
@@ -718,7 +814,7 @@
             }
             recursiveSelect(files, !allSelected);
             updateStats();
-            renderFileTree(currentFolder ? currentFolder.children : files);
+            renderFileTree(files);
             updateSelectEverythingButtonText();
         }
 
@@ -735,10 +831,13 @@
         function openEditFileNameModal(node) {
             modalTitle.textContent = `Edit ${node.type === 'folder' ? 'Folder' : 'File'} Name`;
             modalBody.innerHTML = `<input type="text" id="editNameInput" class="edit-name-input" value="${node.name}">`;
-            modalFooter.innerHTML = `<button id="saveNameBtn">Save</button><button id="cancelNameBtn">Cancel</button>`;
+            modalFooter.innerHTML = `
+                <div class="modal-footer-row">
+                    <button id="saveNameBtn" class="btn btn-primary"><i class="fa-solid fa-check"></i> Save</button>
+                    <button class="btn btn-secondary" onClick="closeModal()">Cancel</button>
+                </div>`;
 
             const saveNameBtn = document.getElementById('saveNameBtn');
-            const cancelNameBtn = document.getElementById('cancelNameBtn');
             const editNameInput = document.getElementById('editNameInput');
 
             saveNameBtn.addEventListener('click', () => {
@@ -752,93 +851,74 @@
                         new_path: fullPath ? `${fullPath}/${newName}` : newName,
                         type: node.type,
                     };
-                    fetch(requestUrl, {
-                        'method': 'POST',
-                        'body': JSON.stringify(body),
-                    }).then(response => {
+                    fetch(requestUrl, { method: 'POST', body: JSON.stringify(body) }).then(response => {
                         if (response.ok) {
                             modalTitle.textContent = 'Success!';
-                            modalBody.innerHTML = '<p>Your Rename has been submitted successfully.</p>';
+                            modalBody.innerHTML = '<p>Your rename has been submitted successfully.</p>';
                             node.name = newName;
-                            renderFileTree(currentFolder ? currentFolder.children : files);
+                            renderFileTree(files);
                         } else {
                             modalTitle.textContent = 'Error';
-                            modalBody.innerHTML = '<p>There was an error submitting your Rename. Try Again!.</p>';
+                            modalBody.innerHTML = '<p>There was an error submitting your rename. Try again!</p>';
                         }
-                        modalFooter.innerHTML = '<button onclick="closeModal()">Okay</button>';
+                        modalFooter.innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Okay</button>';
                         openModal();
                     });
                 }
             });
 
-            cancelNameBtn.addEventListener('click', closeModal);
-
-            editNameInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    saveNameBtn.click();
-                }
-            });
+            editNameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') saveNameBtn.click(); });
 
             openModal();
             editNameInput.setSelectionRange(editNameInput.value.length, editNameInput.value.length);
             editNameInput.focus();
         }
 
-        function openModal() {
-            reusableModal.style.display = 'block';
-        }
-
-        function closeModal() {
-            reusableModal.style.display = 'none';
-        }
+        function openModal() { reusableModal.style.display = 'block'; }
+        function closeModal() { reusableModal.style.display = 'none'; }
 
         function submitData() {
-            if (parseInt(checkedFilesEl.innerText) === 0) {
+            if (parseInt(selectedCount.innerText) === 0) {
                 modalTitle.textContent = 'Error';
                 modalBody.innerHTML = '<p>No files selected.</p>';
-                modalFooter.innerHTML = '<button onclick="closeModal()">Okay</button>';
+                modalFooter.innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Okay</button>';
                 openModal();
                 return;
             }
             modalTitle.textContent = 'Processing...';
-            modalBody.innerHTML = `<p>Submitting, ${checkedFilesEl.innerText} file(s)... </p>`;
+            modalBody.innerHTML = `<p>Submitting ${selectedCount.innerText} file(s)...</p>`;
             modalFooter.innerHTML = '';
             openModal();
             const requestUrl = `/app/files/torrent?gid=${urlParams.gid}&pin=${pinInput.value}&mode=selection`;
-            fetch(requestUrl, { 'method': 'POST', 'body': JSON.stringify(files) }).then(response => {
-                if (reusableModal.style.display === 'block') {
-                    closeModal();
-                }
+            fetch(requestUrl, { method: 'POST', body: JSON.stringify(files) }).then(response => {
+                if (reusableModal.style.display === 'block') closeModal();
                 if (response.ok) {
                     modalTitle.textContent = 'Success!';
                     modalBody.innerHTML = '<p>Your selection has been submitted successfully.</p>';
                 } else {
                     modalTitle.textContent = 'Error';
-                    modalBody.innerHTML = '<p>An error occurred while submitting your selection. Try Again!</p>';
+                    modalBody.innerHTML = '<p>An error occurred while submitting your selection. Try again!</p>';
                 }
-                modalFooter.innerHTML = '<button onclick="closeModal()">Okay</button>';
+                modalFooter.innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Okay</button>';
                 openModal();
             });
         }
 
-        pinInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                submitPin.click();
-            }
-        });
+        pinInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') submitPin.click(); });
+
         submitPin.addEventListener('click', () => {
             pinInput.blur();
             if (pinInput.value === '') {
                 modalTitle.textContent = 'Missing Pin';
                 modalBody.innerHTML = `<p>The pin is missing.</p>`;
-                modalFooter.innerHTML = '<button onclick="closeModal()">Try Again</button>';
+                modalFooter.innerHTML = '<button class="btn btn-primary" onClick="closeModal()">Try Again</button>';
                 openModal();
                 return false;
             }
             if (urlParams.gid == null || urlParams.gid === '') {
                 modalTitle.textContent = 'Missing parameter';
                 modalBody.innerHTML = `<p>The parameter gid is missing.</p>`;
-                modalFooter.innerHTML = '<button onclick="closeModal()">Try Again</button>';
+                modalFooter.innerHTML = '<button class="btn btn-primary" onClick="closeModal()">Try Again</button>';
                 openModal();
                 return false;
             }
@@ -848,33 +928,35 @@
                     return response.json().then(data => {
                         if (data.error) {
                             modalTitle.textContent = data.error;
-                            modalBody.innerHTML = `<p>${data.message}. Try Again!</p>`;
-                            modalFooter.innerHTML = '<button onclick="closeModal()">Retry</button>';
+                            modalBody.innerHTML = `<p>${data.message}. Try again!</p>`;
+                            modalFooter.innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Retry</button>';
                             openModal();
                         } else {
                             files = data.files;
+                            ensureExpandState(files);
                             allowEdit = data.engine === "qbittorrent";
                             pinEntry.classList.add('fadeOut');
                             setTimeout(() => {
                                 pinEntry.style.display = 'none';
-                                fileManager.style.display = 'block';
+                                fileManager.classList.remove('hidden');
+                                confirmFabWrap.classList.remove('hidden');
                                 renderFileTree(files);
                                 updateStats();
                                 updateSelectAllButtonText();
                                 updateSelectEverythingButtonText();
-                            }, 500);
+                            }, 400);
                         }
                     });
                 } else {
                     modalTitle.textContent = 'Something Went Wrong!';
                     modalBody.innerHTML = '<p>Check console. Status Code: ' + response.status + '</p>';
-                    modalFooter.innerHTML = '<button onclick="closeModal()">Retry</button>';
+                    modalFooter.innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Retry</button>';
                     openModal();
                 }
             }).catch(error => {
                 modalTitle.textContent = 'Server Error';
-                modalBody.innerHTML = '<p>There was an error connecting to the server. Try Again!</p><br>' + error.message;
-                modalFooter.innerHTML = '<button onclick="closeModal()">Retry</button>';
+                modalBody.innerHTML = '<p>There was an error connecting to the server. Try again!</p><br>' + error.message;
+                modalFooter.innerHTML = '<button class="btn btn-primary" onclick="closeModal()">Retry</button>';
                 openModal();
             });
         });
@@ -883,48 +965,28 @@
         const selectEverythingBtn = document.getElementById('selectEverythingBtn');
 
         invertSelectionBtn.addEventListener('click', invertSelection);
-        selectEverythingBtn.addEventListener('click', selectEverything);
-
         selectAllBtn.addEventListener('click', selectAll);
         selectEverythingBtn.addEventListener('click', selectEverything);
         submitBtn.addEventListener('click', submitData);
 
         reusableModal.addEventListener('click', (event) => {
-            if (event.target === reusableModal) {
-                event.stopPropagation();
-            }
+            if (event.target === reusableModal) event.stopPropagation();
         });
 
         function updateSelectAllButtonText() {
-            const nodes = currentFolder ? currentFolder.children : files;
-            if (nodes.length === 0) {
-                selectAllBtn.textContent = 'Select All';
-                return;
-            }
+            const nodes = files;
             const allSelected = nodes.every(node => node.type === 'folder' ? areAllChildrenSelected(node) : node.selected);
-            selectAllBtn.textContent = allSelected ? 'Deselect All' : 'Select All';
+            selectAllBtn.innerHTML = allSelected
+                ? '<i class="fa-solid fa-xmark all"></i> None'
+                : '<i class="fa-solid fa-check-double all"></i> All';
         }
 
         function updateSelectEverythingButtonText() {
-            if (files.length === 0) {
-                selectEverythingBtn.textContent = 'Select Everything';
-                return;
-            }
-            const allSelected = files.every(node => node.type === 'folder' ? areAllChildrenSelected(node) : node.selected);
-            selectEverythingBtn.textContent = allSelected ? 'Deselect Everything' : 'Select Everything';
+            const allSelected = parseInt(selectedCount.textContent) === parseInt(totalCount.textContent) && parseInt(totalCount.textContent) > 0;
+            selectEverythingBtn.innerHTML = allSelected
+                ? '<i class="fa-solid fa-layer-group every"></i> Clear'
+                : '<i class="fa-solid fa-layer-group every"></i> Every';
         }
-
-        function sticking() {
-            var window_top = window.scrollY;
-            var div_top = document.querySelector('.brand').offsetTop;
-            if (window_top > div_top) {
-                document.getElementById('sticks').classList.add('stick');
-            } else {
-                document.getElementById('sticks').classList.remove('stick');
-            }
-        }
-        window.addEventListener('scroll', sticking);
-        sticking();
     </script>
 </body>
 
