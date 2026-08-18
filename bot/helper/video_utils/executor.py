@@ -3,8 +3,10 @@ from aiofiles.os import path as aiopath
 from ast import literal_eval
 from asyncio import create_subprocess_exec
 from asyncio.subprocess import PIPE
+from langcodes import Language, find as find_language
 from natsort import natsorted
 from os import path as ospath, walk
+import re
 
 from . import VID_MODE
 from .extra_selector import ExtraSelect
@@ -13,8 +15,36 @@ from ...core.config_manager import Config, BinConfig
 from ..ext_utils.bot_lock import ff_lock
 from ..ext_utils.bot_utils import sync_to_async, cmd_exec
 from ..ext_utils.files_utils import clean_target
-from ..ext_utils.media_utils import get_document_type, get_media_info, FFMpeg
+from ..ext_utils.media_utils import get_document_type, get_media_info, get_streams, FFMpeg
 from ..mirror_leech_utils.status_utils.ffmpeg_status import FFmpegStatus
+
+# tokens between dots/underscores/dashes/brackets/spaces, e.g.
+# "Movie.Name.2024.sin.srt" -> ["Movie", "Name", "2024", "sin"]
+_NAME_TOKEN_RE = re.compile(r"[._\-\[\]()\s]+")
+
+
+def detect_sub_language(sub_path: str):
+    """
+    Try to detect a subtitle's language from its filename (checked from the
+    end, since language tags are usually placed right before the extension,
+    e.g. "movie.eng.srt", "movie.sinhala.ass", "movie.si.srt").
+    Returns (iso639-2 code, display name) or (None, None) if nothing matches.
+    """
+    stem = ospath.splitext(ospath.basename(sub_path))[0]
+    tokens = [t for t in _NAME_TOKEN_RE.split(stem) if t.isalpha()]
+    for tok in reversed(tokens):
+        low = tok.lower()
+        try:
+            if 2 <= len(low) <= 3:
+                lang = Language.get(low)
+                if lang.is_valid():
+                    return lang.to_alpha3(), lang.display_name()
+            else:
+                lang = find_language(low)
+                return lang.to_alpha3(), lang.display_name()
+        except Exception:
+            continue
+    return None, None
 
 
 async def get_metavideo(video_file):
@@ -288,6 +318,21 @@ class VidExecutor:
             cmd += ["-map", "0"]
             for i in range(len(subs)):
                 cmd += ["-map", f"{i + 1}"]
+            # "-map 0" pulls in any subtitle streams already inside the
+            # source video first, so newly-muxed subs are indexed after them
+            src_streams = await get_streams(video) or []
+            sub_offset = sum(
+                1 for s in src_streams if s.get("codec_type") == "subtitle"
+            )
+            for i, sub in enumerate(subs):
+                s_index = sub_offset + i
+                lang_code, lang_name = detect_sub_language(sub)
+                if lang_code:
+                    cmd += [f"-metadata:s:s:{s_index}", f"language={lang_code}"]
+                    cmd += [f"-metadata:s:s:{s_index}", f"title={lang_name}"]
+                else:
+                    fallback = Config.AUTHOR_NAME or "CineFlow"
+                    cmd += [f"-metadata:s:s:{s_index}", f"title={fallback}"]
             cmd += ["-c", "copy", outfile]
         total_time = (await get_media_info(video))[0]
         rcode = await self._run_cmd(cmd, total_time)
