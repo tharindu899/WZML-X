@@ -288,8 +288,13 @@ async def message_handler(_, message: Message, obj: SelectMode, is_sub=False):
             if message.document and not media.file_name.lower().endswith((".ass", ".srt")):
                 await send_message(message, "Only .ass or .srt allowed!")
                 return
+            # Keep the original filename (prefixed with file_id to avoid
+            # collisions) instead of dropping it, since language-detection
+            # for the muxed subtitle relies on tokens in the original name
+            # (e.g. "Lanterns_S01E01_Sinhala.srt" -> Sinhala).
+            orig_name = getattr(media, "file_name", "") or f"{media.file_id}.srt"
             obj.extra_data["subfile"] = await message.download(
-                ospath.join("watermark", media.file_id)
+                ospath.join("watermark", f"{media.file_id}_{orig_name}")
             )
         else:
             if message.document and "image" not in getattr(media, "mime_type", "None"):
