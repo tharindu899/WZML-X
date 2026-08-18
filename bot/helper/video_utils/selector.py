@@ -36,7 +36,6 @@ class SelectMode:
         self.message_event = Event()
         self.is_cancelled = False
 
-    @new_task
     async def _event_handler(self):
         pfunc = partial(cb_vidtools, obj=self)
         handler = self.listener.client.add_handler(
