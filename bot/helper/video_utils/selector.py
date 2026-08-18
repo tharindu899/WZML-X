@@ -283,7 +283,7 @@ async def message_handler(_, message: Message, obj: SelectMode, is_sub=False):
     if obj.is_rename and message.text:
         obj.newname = message.text.strip().replace("/", "")
         obj.is_rename = False
-    elif obj.mode == "watermark" and (media := is_media(message)):
+    elif obj.mode in ("watermark", "vid_sub") and (media := is_media(message)):
         if is_sub:
             if message.document and not media.file_name.lower().endswith((".ass", ".srt")):
                 await send_message(message, "Only .ass or .srt allowed!")
