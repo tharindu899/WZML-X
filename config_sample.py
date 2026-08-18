@@ -53,7 +53,7 @@ DISABLE_YTDLP = False
 
 # Telegraph
 AUTHOR_NAME = "CineFlow"
-AUTHOR_URL = "https://t.me/WZML_X"
+AUTHOR_URL = "https://t.me/CineFlow_Update"
 
 # Task Limits
 DIRECT_LIMIT = 0
@@ -165,7 +165,7 @@ USENET_SERVERS = [
 
 # Update
 UPSTREAM_REPO = ""
-UPSTREAM_BRANCH = "master"
+UPSTREAM_BRANCH = "ccineflow"
 # Leech
 LEECH_SPLIT_SIZE = 0
 AS_DOCUMENT = False
