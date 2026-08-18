@@ -689,6 +689,7 @@ class TaskListener(TaskConfig):
             await remove(self.thumb)
 
     async def on_upload_error(self, error):
+        self.is_cancelled = True
         async with task_dict_lock:
             if self.mid in task_dict:
                 del task_dict[self.mid]
