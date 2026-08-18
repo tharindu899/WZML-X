@@ -341,7 +341,8 @@ async def cb_vidtools(_, query: CallbackQuery, obj: SelectMode):
         case "hardsub":
             hmode = not bool(obj.extra_data.get("hardsub"))
             if not hmode and obj.mode == "vid_sub":
-                obj.extra_data.clear()
+                for key in ("fontname", "fontsize", "fontcolour", "boldstyle"):
+                    obj.extra_data.pop(key, None)
             obj.extra_data["hardsub"] = hmode
             await obj.list_buttons()
         case "subfile":
