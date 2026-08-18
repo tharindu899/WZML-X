@@ -143,6 +143,16 @@ class TelegramDownloadHelper:
             await self._download(message, path)
             return
         except Exception as e:
+            if self._listener.is_cancelled:
+                # The download was stopped on purpose. Pyrogram can still be
+                # mid-flight finalizing the .temp file (moving/renaming it)
+                # when our own cancellation cleanup removes the download
+                # folder, which races into FileNotFoundError/OSError here.
+                # This is expected on cancel, not a real crash, so we log it
+                # quietly and skip re-reporting an error the listener already
+                # knows about (cancel_task() already called on_download_error).
+                LOGGER.info(f"Download cancelled, ignoring cleanup race: {e}")
+                return
             LOGGER.error(str(e), exc_info=True)
             await self._on_download_error(str(e))
             return
