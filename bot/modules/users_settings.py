@@ -161,7 +161,7 @@ user_settings_text = {
         "",
         "",
         """<i>Send your Name Swap. You can add pattern instead of normal text according to the format.</i>
-<b>Full Documentation Guide</b> <a href="https://t.me/WZML_X/77">Click Here</a>
+<b>Full Documentation Guide</b> <a href="https://t.me/CineFlow_Update/77">Click Here</a>
 ┖ <b>Time Left :</b> <code>60 sec</code>
 """,
     ),
@@ -194,8 +194,8 @@ Here I will explain how to use mltb.* which is reference to files you want to wo
     "METADATA_CMDS": (
         "",
         "",
-        """<i>Send your Meta data. You can set it according to the format title="Join @WZML_X".</i>
-<b>Full Documentation Guide</b> <a href="https://t.me/WZML_X/">Click Here</a>
+        """<i>Send your Meta data. You can set it according to the format title="Join @CineFlow_Update".</i>
+<b>Full Documentation Guide</b> <a href="https://t.me/CineFlow_Update/">Click Here</a>
 ┖ <b>Time Left :</b> <code>60 sec</code>
 """,
     ),

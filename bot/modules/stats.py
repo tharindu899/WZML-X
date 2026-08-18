@@ -164,7 +164,7 @@ async def get_stats(event, key="home"):
             changelog += f" | <code>{git_info.commit_hash()}</code>"
         official_v = (
             await cmd_exec(
-                f"curl -o latestversion.py https://raw.githubusercontent.com/SilentDemonSD/WZML-X/{Config.UPSTREAM_BRANCH}/bot/version.py -s && python3 latestversion.py && rm latestversion.py",
+                f"curl -o latestversion.py https://raw.githubusercontent.com/cineflow-web/CineFlow_WZML-X/{Config.UPSTREAM_BRANCH}/bot/version.py -s && python3 latestversion.py && rm latestversion.py",
                 True,
             )
         )[0]

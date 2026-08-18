@@ -62,7 +62,7 @@ class Config:
     GDRIVE_ID = ""
     GD_DESP = "Uploaded with CineFlow Bot"
     AUTHOR_NAME = "CineFlow"
-    AUTHOR_URL = "https://t.me/WZML_X"
+    AUTHOR_URL = "https://t.me/CineFlow_Update"
     INSTADL_API = ""
     IMDB_TEMPLATE = ""
     IMAGES = []

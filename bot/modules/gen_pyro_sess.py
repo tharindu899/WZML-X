@@ -342,7 +342,7 @@ async def gen_pyro_string(_, message):
             f"⌬ <b><u>WZGram Session Generated</u></b>\n\n"
             f"<code>{session_string}</code>\n\n"
             f"<b>WZGram v{wzgram_version} | CineFlow {get_version()}</b>\n"
-            f"<b>Via <a href='https://github.com/SilentDemonSD/WZML-X'>CineFlow</a> [ @WZML_X ]</b>",
+            f"<b>Via <a href='https://github.com/cineflow-web/CineFlow_WZML-X'>CineFlow</a> [ @CineFlow_Update ]</b>",
             disable_web_page_preview=True,
         )
         await _safe_disconnect(pyro_client)

@@ -9,28 +9,28 @@
 </p>
 
 <p align="center">
-   <a href="https://github.com/SilentDemonSD/WZML-X">
-      <img src="https://img.shields.io/github/stars/SilentDemonSD/WZML-X?style=for-the-badge&logo=github&label=Stars" alt="Stars">
+   <a href="https://github.com/cineflow-web/CineFlow_WZML-X">
+      <img src="https://img.shields.io/github/stars/cineflow-web/CineFlow_WZML-X?style=for-the-badge&logo=github&label=Stars" alt="Stars">
    </a>
 
-   <a href="https://github.com/SilentDemonSD/WZML-X/search?l=python">
-      <img src="https://img.shields.io/github/languages/top/SilentDemonSD/WZML-X?style=for-the-badge&logo=python&label=Python" alt="Python">
+   <a href="https://github.com/cineflow-web/CineFlow_WZML-X/search?l=python">
+      <img src="https://img.shields.io/github/languages/top/cineflow-web/CineFlow_WZML-X?style=for-the-badge&logo=python&label=Python" alt="Python">
    </a>
 
-   <a href="https://github.com/SilentDemonSD/WZML-X/blob/main/docker-compose.yml">
+   <a href="https://github.com/cineflow-web/CineFlow_WZML-X/blob/main/docker-compose.yml">
       <img src="https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Compose">
    </a>
 
-   <a href="https://t.me/WZML_X">
+   <a href="https://t.me/CineFlow_Update">
       <img src="https://img.shields.io/badge/Telegram-Community-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram">
    </a>
 
-   <a href="https://github.com/SilentDemonSD/WZML-X/blob/main/LICENSE">
-      <img src="https://img.shields.io/github/license/SilentDemonSD/WZML-X?style=for-the-badge&label=License" alt="License">
+   <a href="https://github.com/cineflow-web/CineFlow_WZML-X/blob/main/LICENSE">
+      <img src="https://img.shields.io/github/license/cineflow-web/CineFlow_WZML-X?style=for-the-badge&label=License" alt="License">
    </a>
 
-   <a href="https://github.com/SilentDemonSD/WZML-X/commits/main">
-      <img src="https://img.shields.io/github/last-commit/SilentDemonSD/WZML-X?style=for-the-badge&label=Last%20Commit" alt="Last Commit">
+   <a href="https://github.com/cineflow-web/CineFlow_WZML-X/commits/main">
+      <img src="https://img.shields.io/github/last-commit/cineflow-web/CineFlow_WZML-X?style=for-the-badge&label=Last%20Commit" alt="Last Commit">
    </a>
 </p>
 
@@ -95,8 +95,8 @@ Deploy with Docker and provide the required configuration values. The container 
    <summary>VPS / Dedicated Server (Recommended)</summary>
 
    ```bash
-   git clone https://github.com/SilentDemonSD/WZML-X.git
-   cd WZML-X
+   git clone https://github.com/cineflow-web/CineFlow_WZML-X.git
+   cd CineFlow_WZML-X
    cp config_sample.py config.py
    # Edit config.py with your values
    docker buildx compose up -d
@@ -153,8 +153,8 @@ Deploy with Docker and provide the required configuration values. The container 
    <summary>Single Container (Manual)</summary>
 
    ```bash
-   git clone https://github.com/SilentDemonSD/WZML-X.git
-   cd WZML-X
+   git clone https://github.com/cineflow-web/CineFlow_WZML-X.git
+   cd CineFlow_WZML-X
    docker build -t wzmlx .
    docker run -p 8080:8080 wzmlx
    ```
@@ -267,8 +267,8 @@ Then tune the optional behavior from `config_sample.py`.
 <details>
    <summary>Join Community</summary>
 
-   - Telegram channel: https://t.me/WZML_X
-   - Support group: https://t.me/WZML_Support
+   - Telegram channel: https://t.me/CineFlow_Update
+   - Support group: https://t.me/CineFlow_Support
 </details>
 
 ## Credits

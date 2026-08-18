@@ -165,7 +165,7 @@ USENET_SERVERS = [
 
 # Update
 UPSTREAM_REPO = ""
-UPSTREAM_BRANCH = "ccineflow"
+UPSTREAM_BRANCH = "master"
 # Leech
 LEECH_SPLIT_SIZE = 0
 AS_DOCUMENT = False
