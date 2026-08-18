@@ -264,7 +264,8 @@ class VidExecutor:
         await self._send_status()
         base_name, ext = ospath.splitext(video)
         subfile = kwargs.get("subfile")
-        if hardsub and subfile and await aiopath.exists(subfile):
+        has_subfile = subfile and await aiopath.exists(subfile)
+        if hardsub and has_subfile:
             outfile = f"{base_name}.hardsub.mp4"
             style = self._hardsub_style(kwargs)
             escaped = subfile.replace("'", r"\'").replace(":", r"\:")
@@ -275,6 +276,8 @@ class VidExecutor:
             )
         else:
             subs = [f for f in files if f != video]
+            if has_subfile and subfile not in subs:
+                subs.append(subfile)
             if not subs:
                 await self.listener.on_upload_error("No subtitle found to merge!")
                 return self._up_path

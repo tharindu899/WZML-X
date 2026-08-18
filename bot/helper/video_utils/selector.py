@@ -154,13 +154,16 @@ class SelectMode:
                     f"{'✅ ' if hardsub else ''}Hardsub", "vidtool hardsub", "header"
                 )
                 if hardsub:
-                    if self.mode == "watermark":
-                        buttons.data_button(
-                            f"{'✅ ' if await aiopath.exists(self.extra_data.get('subfile', '')) else ''}Sub File",
-                            "vidtool subfile",
-                            "header",
-                        )
                     buttons.data_button("Font Style", "vidtool fontstyle", "header")
+
+            if self.mode == "vid_sub" or (
+                self.mode == "watermark" and self.extra_data.get("hardsub")
+            ):
+                buttons.data_button(
+                    f"{'✅ ' if await aiopath.exists(self.extra_data.get('subfile', '')) else ''}Sub File",
+                    "vidtool subfile",
+                    "header",
+                )
 
             if self.mode in ("compress", "watermark") or self.extra_data.get("hardsub"):
                 buttons.data_button("Quality", "vidtool quality", "header")
