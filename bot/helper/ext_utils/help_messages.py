@@ -165,6 +165,13 @@ Create screenshots for one video or folder of videos.
 /cmd -ss (it will take the default values which is 10 photos).
 You can control this value. Example: /cmd -ss 6."""
 
+vid_tools = """<b>Video Tools</b>: -vt
+
+Opens an interactive menu (before the download starts) to trim, merge videos/audios/subs,
+watermark (with optional hardsub), compress, convert resolution, sync subtitles, or
+extract/remove streams from the downloaded file(s).
+/cmd link -vt"""
+
 seed = """<b>Bittorrent seed</b>: -d
 
 /cmd link -d ratio:seed_time or by replying to file/link
@@ -313,6 +320,7 @@ YT_HELP_DICT = {
     "Bulk": bulk,
     "Sample-Video": sample_video,
     "Screenshot": screenshot,
+    "Video-Tools": vid_tools,
     "Convert-Media": convert_media,
     "Force-Start": force_start,
     "Name-Swap": name_swap,
@@ -343,6 +351,7 @@ MIRROR_HELP_DICT = {
     "Tg-Links": tg_links,
     "Sample-Video": sample_video,
     "Screenshot": screenshot,
+    "Video-Tools": vid_tools,
     "Convert-Media": convert_media,
     "Force-Start": force_start,
     "User-Download": user_download,

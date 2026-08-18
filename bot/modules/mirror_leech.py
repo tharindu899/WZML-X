@@ -25,6 +25,7 @@ from ..helper.ext_utils.links_utils import (
     is_url,
 )
 from ..helper.ext_utils.task_manager import pre_task_check
+from ..helper.video_utils.selector import SelectMode
 from ..helper.listeners.task_listener import TaskListener
 from ..helper.mirror_leech_utils.download_utils.alldebrid_resolver import (
     alldebrid_resolve,
@@ -123,6 +124,7 @@ class Mirror(TaskListener):
             "-ut": False,
             "-ad": False,
             "-yt": False,
+            "-vt": False,
             "-i": 0,
             "-sp": 0,
             "link": "",
@@ -196,6 +198,7 @@ class Mirror(TaskListener):
         self.user_trans = args["-ut"]
         self.is_alldebrid = args["-ad"]
         self.is_yt = args["-yt"]
+        self.vid_mode_requested = args["-vt"]
         self.metadata_dict = self.default_metadata_dict.copy()
         self.audio_metadata_dict = self.audio_metadata_dict.copy()
         self.video_metadata_dict = self.video_metadata_dict.copy()
@@ -379,6 +382,14 @@ class Mirror(TaskListener):
 
         if len(self.link) > 0:
             LOGGER.info(self.link)
+
+        if self.vid_mode_requested:
+            vid_mode = await SelectMode(self).get_buttons()
+            if vid_mode is None:
+                await self.remove_from_same_dir()
+                await delete_links(self.message)
+                return
+            self.vid_mode = vid_mode
 
         try:
             await self.before_start()

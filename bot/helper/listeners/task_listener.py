@@ -285,6 +285,15 @@ class TaskListener(TaskConfig):
             self.is_file = await aiopath.isfile(up_path)
             self.name = up_path.replace(f"{up_dir}/", "").split("/", 1)[0]
 
+        if self.vid_mode:
+            up_path = await self.generate_vid_tools(up_path, gid)
+            if self.is_cancelled:
+                return
+            self.is_file = await aiopath.isfile(up_path)
+            self.name = up_path.replace(f"{up_dir}/", "").split("/", 1)[0]
+            self.size = await get_path_size(up_dir)
+            self.clear()
+
         if self.screen_shots:
             up_path = await self.generate_screenshots(up_path)
             if self.is_cancelled:

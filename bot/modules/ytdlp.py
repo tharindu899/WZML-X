@@ -18,6 +18,7 @@ from ..helper.ext_utils.bot_utils import (
 )
 from ..helper.ext_utils.links_utils import is_url
 from ..helper.ext_utils.task_manager import pre_task_check
+from ..helper.video_utils.selector import SelectMode
 from ..helper.ext_utils.status_utils import get_readable_file_size, get_readable_time
 from ..helper.listeners.task_listener import TaskListener
 from ..helper.mirror_leech_utils.download_utils.yt_dlp_download import (
@@ -313,6 +314,7 @@ class YtDlp(TaskListener):
             "-hl": False,
             "-bt": False,
             "-ut": False,
+            "-vt": False,
             "-i": 0,
             "-sp": 0,
             "link": "",
@@ -387,6 +389,7 @@ class YtDlp(TaskListener):
         self.folder_name = f"/{args['-m']}".rstrip("/") if len(args["-m"]) > 0 else ""
         self.bot_trans = args["-bt"]
         self.user_trans = args["-ut"]
+        self.vid_mode_requested = args["-vt"]
         self.metadata_dict = self.default_metadata_dict.copy()
         self.audio_metadata_dict = self.audio_metadata_dict.copy()
         self.video_metadata_dict = self.video_metadata_dict.copy()
@@ -464,6 +467,14 @@ class YtDlp(TaskListener):
 
         if "mdisk.me" in self.link:
             self.name, self.link = await _mdisk(self.link, self.name)
+
+        if self.vid_mode_requested:
+            vid_mode = await SelectMode(self).get_buttons()
+            if vid_mode is None:
+                await self.remove_from_same_dir()
+                await delete_links(self.message)
+                return
+            self.vid_mode = vid_mode
 
         try:
             await self.before_start()

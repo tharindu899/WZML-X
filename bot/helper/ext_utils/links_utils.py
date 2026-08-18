@@ -10,6 +10,22 @@ def is_magnet(url: str):
     )
 
 
+def is_media(message):
+    if not message:
+        return None
+    return (
+        message.document
+        or message.photo
+        or message.video
+        or message.audio
+        or message.voice
+        or message.video_note
+        or message.sticker
+        or message.animation
+        or None
+    )
+
+
 def is_url(url: str):
     return bool(
         re_match(

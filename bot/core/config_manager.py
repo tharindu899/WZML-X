@@ -37,6 +37,14 @@ class Config:
     DISABLE_YTDLP = False
     EQUAL_SPLITS = False
     EXCLUDED_EXTENSIONS = ""
+    DISABLE_VIDTOOLS = ""
+    DISABLE_MULTI_VIDTOOLS = "trim watermark compress"
+    VIDTOOLS_FAST_MODE = False
+    LIB264_PRESET = "medium"
+    LIB265_PRESET = "medium"
+    HARDSUB_FONT_NAME = "Arial"
+    HARDSUB_FONT_SIZE = ""
+    COMPRESS_BANNER = ""
     FFMPEG_CMDS = {}
     FILELION_API = ""
     MEDIA_STORE = True

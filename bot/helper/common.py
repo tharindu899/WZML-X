@@ -137,6 +137,7 @@ class TaskConfig:
         self.convert_audio = False
         self.convert_video = False
         self.screen_shots = False
+        self.vid_mode = None
         self.is_cancelled = False
         self.force_run = False
         self.force_download = False
@@ -1006,6 +1007,11 @@ class TaskConfig:
                         continue
                     await move(f_path, ospath.join(dirpath, new_name))
             return dl_path
+
+    async def generate_vid_tools(self, dl_path, gid):
+        from .video_utils.executor import VidExecutor
+
+        return await VidExecutor(self, dl_path, gid).execute()
 
     async def generate_screenshots(self, dl_path):
         ss_nb = int(self.screen_shots) if isinstance(self.screen_shots, str) else 10
