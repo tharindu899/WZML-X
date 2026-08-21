@@ -278,8 +278,24 @@ async def cb_extra(_, query: CallbackQuery, obj: ExtraSelect):
                         await query.answer("Please select at least one stream!", True)
                 case "audio" | "subtitle" as value:
                     await query.answer()
-                    obj.executor.data["key"] = value
-                    obj.event.set()
+                    matches = [
+                        k for k, v in ddict["stream"].items() if v["type"] == value
+                    ]
+                    all_selected = bool(matches) and all(
+                        m in ddict["sdata"] for m in matches
+                    )
+                    for m in matches:
+                        info = ddict["stream"][m]["info"]
+                        if all_selected:
+                            if m in ddict["sdata"]:
+                                ddict["sdata"].remove(m)
+                            ddict["stream"][m]["info"] = info.replace("✅ ", "")
+                        else:
+                            if m not in ddict["sdata"]:
+                                ddict["sdata"].append(m)
+                            if not info.startswith("✅ "):
+                                ddict["stream"][m]["info"] = f"✅ {info}"
+                    await obj.update_message(*obj.streams_select())
                 case "reverse":
                     if ddict["sdata"]:
                         await query.answer()

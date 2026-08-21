@@ -570,14 +570,17 @@ class VidExecutor:
             await self._send_status()
             base_name = ospath.splitext(video)[0]
             keys = key if isinstance(key, list) else [key]
+            stream_info = (self.data or {}).get("stream", {})
+            ext_map = {"video": "mkv", "audio": extension[0], "subtitle": extension[1]}
             extracted = []
             for k in keys:
                 if k in ("video", "audio", "subtitle"):
-                    ext_map = {"video": "mkv", "audio": extension[0], "subtitle": extension[1]}
                     outfile = f"{base_name}.{k}.{ext_map[k]}"
                     cmd = self._base_cmd("-i", video, "-map", f"0:{k[0]}", "-c", "copy", outfile)
                 else:
-                    outfile = f"{base_name}.stream{k}.{extension[2]}"
+                    stype = stream_info.get(k, {}).get("type")
+                    stream_ext = ext_map.get(stype, extension[2])
+                    outfile = f"{base_name}.stream{k}.{stream_ext}"
                     cmd = self._base_cmd("-i", video, "-map", f"0:{k}", "-c", "copy", outfile)
                 total_time = (await get_media_info(video))[0]
                 rcode = await self._run_cmd(cmd, total_time)
