@@ -224,7 +224,7 @@ class ExtraSelect:
         if extra_mode := getattr(self, f"{self.executor.mode}_select", None):
             await extra_mode(*args)
         await task
-        self.executor.event.set()
+        self.event.set()
         await delete_message(self._reply)
         if self.is_cancel:
             self._listener.is_cancelled = True
