@@ -8,7 +8,6 @@ from pyrogram.types import CallbackQuery
 from time import time
 
 from . import VID_MODE
-from ..ext_utils.bot_utils import new_task
 from ..ext_utils.status_utils import get_readable_file_size, get_readable_time
 from ..telegram_helper.button_build import ButtonMaker
 from ..telegram_helper.message_utils import send_message, edit_message, delete_message
@@ -25,7 +24,6 @@ class ExtraSelect:
         self.extension = [None, None, "mkv"]
         self.status = ""
 
-    @new_task
     async def _event_handler(self):
         pfunc = partial(cb_extra, obj=self)
         handler = self._listener.client.add_handler(
