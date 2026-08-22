@@ -282,9 +282,6 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
         msg += f"\n┠ <b>In Mode</b> → <i>{task.listener.mode[0]}</i>"
         msg += f"\n┠ <b>Out Mode</b> → <i>{task.listener.mode[1]}</i>"
         from ..telegram_helper.bot_commands import BotCommands
-        from ...core.tg_client import TgClient
-
-        bsuffix = TgClient.suffix_for(getattr(task.listener, "client", None))
 
         if tstatus in [
             MirrorStatus.STATUS_DOWNLOAD,
@@ -296,9 +293,9 @@ async def get_readable_message(sid, is_user, page_no=1, status="All", page_step=
                 or task.listener.is_qbit
                 or task.listener.is_nzb
             ):
-                msg += f"\n┠ <b>Select</b> → /{BotCommands.SelectCommand[1]}{bsuffix}_{task.gid()[:8]}"
+                msg += f"\n┠ <b>Select</b> → /{BotCommands.SelectCommand[1]}_{task.gid()[:8]}"
 
-        msg += f"\n<b>┖ Stop</b> → <i>/{BotCommands.CancelTaskCommand[1]}{bsuffix}_{task.gid()[:8]}</i>\n\n"
+        msg += f"\n<b>┖ Stop</b> → <i>/{BotCommands.CancelTaskCommand[1]}_{task.gid()[:8]}</i>\n\n"
 
     if len(msg) == 0:
         if status == "All":
