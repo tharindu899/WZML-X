@@ -113,7 +113,7 @@ ENABLE_TELEMETRY = True  # Send crash reports to remote worker
 # Bot Settings
 BOT_PM = False
 SET_COMMANDS = True
-TIMEZONE = "Asia/Kolkata"
+TIMEZONE = "Asia/Colombo"
 
 # GDrive Tools
 GDRIVE_ID = ""

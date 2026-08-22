@@ -1,7 +1,7 @@
 from __future__ import annotations
 from aiofiles.os import path as aiopath
 from ast import literal_eval
-from asyncio import create_subprocess_exec
+from asyncio import create_subprocess_exec, create_task
 from asyncio.subprocess import PIPE
 from langcodes import Language, find as find_language
 from natsort import natsorted
@@ -201,8 +201,15 @@ class VidExecutor:
             self.listener.subproc = await create_subprocess_exec(
                 *full_cmd, stdout=PIPE, stderr=PIPE
             )
+            # Drain stderr concurrently with the stdout progress reader.
+            # Both pipes are OS-buffered (~64KB); if ffmpeg logs enough to
+            # stderr (e.g. malformed subtitle timestamps) while only stdout
+            # is being read, ffmpeg blocks on write() and the whole task
+            # appears to hang mid-progress.
+            stderr_task = create_task(self.listener.subproc.stderr.read())
             await self._eng._ffmpeg_progress()
-            _, stderr = await self.listener.subproc.communicate()
+            await self.listener.subproc.wait()
+            stderr = await stderr_task
         rcode = self.listener.subproc.returncode
         if self.listener.is_cancelled:
             return -1
