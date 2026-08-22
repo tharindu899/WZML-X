@@ -29,6 +29,21 @@ WEB_ACCESS_PASSWORD = (
     ""  # Secret for deriving proxy passwords. Logs derived passwords at startup.
 )
 
+# Optional extra leech bots — each token spins up a FULL independent bot
+# (its own username, its own updates) so a group can spread /leech load
+# across several bot accounts instead of hammering just one.
+# BOT_TOKEN above always answers /leech (and the rest of the task commands).
+# Leave any of these blank to skip starting that extra bot — nothing else
+# needs to change; the corresponding N-suffixed commands just won't exist.
+# LEECH2_TOKEN -> adds /leech2, /mirror2, /status2, /cancel2, etc. (bot #2)
+# LEECH3_TOKEN -> adds /leech3, /mirror3, /status3, /cancel3, etc. (bot #3)
+# LEECH4_TOKEN -> adds /leech4, ... (bot #4)
+# LEECH5_TOKEN -> adds /leech5, ... (bot #5)
+LEECH2_TOKEN = ""
+LEECH3_TOKEN = ""
+LEECH4_TOKEN = ""
+LEECH5_TOKEN = ""
+
 # Hyper Tg Downloader
 HELPER_TOKENS = ""
 USE_HYPER = True

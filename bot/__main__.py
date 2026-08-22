@@ -86,6 +86,7 @@ async def main():
         TgClient.start_user(),
         TgClient.start_helper_bots(),
         TgClient.start_helper_users(),
+        TgClient.start_leech_bots(),
     )
     await gather(load_configurations(), update_variables())
 
@@ -141,6 +142,10 @@ from .helper.listeners.aria2_listener import add_aria2_callbacks
 add_aria2_callbacks()
 create_help_buttons()
 bot_loop.run_until_complete(add_handlers())
+
+from .core.multi_leech_handlers import add_all_leech_bot_handlers
+
+bot_loop.run_until_complete(add_all_leech_bot_handlers())
 
 from .modules import restart_notification
 

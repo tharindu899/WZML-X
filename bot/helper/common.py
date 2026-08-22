@@ -673,7 +673,7 @@ class TaskConfig:
             msg.append(f"{self.bulk[0]} -i {self.multi - 1} {self.options}")
             msgts = " ".join(msg)
             if self.multi > 2:
-                msgts += f"\n• <b>Cancel Multi:</b> <i>/{BotCommands.CancelTaskCommand[1]}_{self.multi_tag}</i>"
+                msgts += f"\n• <b>Cancel Multi:</b> <i>/{BotCommands.CancelTaskCommand[1]}{TgClient.suffix_for(self.client)}_{self.multi_tag}</i>"
             nextmsg = await send_message(self.message, msgts)
         else:
             msg = [s.strip() for s in input_list]
@@ -691,7 +691,7 @@ class TaskConfig:
                 nextmsg = self.message
             msgts = " ".join(msg)
             if self.multi > 2:
-                msgts += f"\n• <b>Cancel Multi:</b> <i>/{BotCommands.CancelTaskCommand[1]}_{self.multi_tag}</i>"
+                msgts += f"\n• <b>Cancel Multi:</b> <i>/{BotCommands.CancelTaskCommand[1]}{TgClient.suffix_for(self.client)}_{self.multi_tag}</i>"
             nextmsg = await send_message(nextmsg, msgts)
         if not isinstance(nextmsg, Message):
             return
@@ -739,7 +739,7 @@ class TaskConfig:
             if len(self.bulk) > 2:
                 self.multi_tag = token_hex(3)
                 multi_tags.add(self.multi_tag)
-                msg += f"\n• <b>Cancel Multi:</b> <i>/{BotCommands.CancelTaskCommand[1]}_{self.multi_tag}</i>"
+                msg += f"\n• <b>Cancel Multi:</b> <i>/{BotCommands.CancelTaskCommand[1]}{TgClient.suffix_for(self.client)}_{self.multi_tag}</i>"
             nextmsg = await send_message(self.message, msg)
             if not isinstance(nextmsg, Message):
                 return

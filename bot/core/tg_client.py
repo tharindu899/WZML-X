@@ -27,6 +27,7 @@ class TgClient:
     helper_loads = {}
     helper_users = {}
     helper_user_loads = {}
+    leech_bots = {}
 
     BNAME = ""
     ID = 0
@@ -193,6 +194,55 @@ class TgClient:
             )
 
     @classmethod
+    async def _retry_leech_bot(cls, no, b_token, delay):
+        await sleep(delay)
+        try:
+            lbot = cls.wztgClient(f"WZ-LeechBot{no}", bot_token=b_token)
+            await lbot.start()
+            cls.leech_bots[no] = lbot
+            LOGGER.info(f"Leech Bot {no} [@{lbot.me.username}] Started!")
+        except FloodWait as e:
+            LOGGER.warning(f"Leech Bot{no} FloodWait: Retrying in {e.value}s...")
+            bot_loop.create_task(cls._retry_leech_bot(no, b_token, e.value))
+        except Exception as e:
+            LOGGER.error(f"Failed to start Leech Bot {no} from LEECH{no}_TOKEN. {e}")
+
+    @classmethod
+    async def start_leech_bot(cls, no, b_token):
+        try:
+            lbot = cls.wztgClient(f"WZ-LeechBot{no}", bot_token=b_token)
+            await lbot.start()
+            cls.leech_bots[no] = lbot
+            LOGGER.info(f"Leech Bot {no} [@{lbot.me.username}] Started!")
+        except FloodWait as e:
+            LOGGER.warning(
+                f"Leech Bot{no} FloodWait: Retrying in {e.value}s (non-blocking)..."
+            )
+            bot_loop.create_task(cls._retry_leech_bot(no, b_token, e.value))
+        except Exception as e:
+            LOGGER.error(f"Failed to start Leech Bot {no} from LEECH{no}_TOKEN. {e}")
+            cls.leech_bots.pop(no, None)
+
+    @classmethod
+    async def start_leech_bots(cls):
+        tokens = {
+            no: token
+            for no, token in (
+                (2, Config.LEECH2_TOKEN),
+                (3, Config.LEECH3_TOKEN),
+                (4, Config.LEECH4_TOKEN),
+                (5, Config.LEECH5_TOKEN),
+            )
+            if token and token.strip()
+        }
+        if not tokens:
+            return
+        LOGGER.info("Starting optional extra leech bot(s)...")
+        await gather(
+            *(cls.start_leech_bot(no, token.strip()) for no, token in tokens.items())
+        )
+
+    @classmethod
     async def start_bot(cls):
         LOGGER.info("Generating client from BOT_TOKEN")
         cls.ID = Config.BOT_TOKEN.split(":", 1)[0]
@@ -267,6 +317,20 @@ class TgClient:
                 cls.user = None
 
     @classmethod
+    def suffix_for(cls, client):
+        """Return the numeric suffix ("2".."5") if `client` is one of the
+        optional extra leech bots (see LEECH2_TOKEN..LEECH5_TOKEN), else ""
+        for the main bot. Used to point cancel/select hint text at whichever
+        bot actually owns a given task.
+        """
+        if client is None or client is cls.bot:
+            return ""
+        for no, lbot in cls.leech_bots.items():
+            if lbot is client:
+                return str(no)
+        return ""
+
+    @classmethod
     async def stop(cls):
         async with cls._lock:
             clients = []
@@ -282,6 +346,9 @@ class TgClient:
             if cls.helper_users:
                 clients.extend(h_user.stop() for h_user in cls.helper_users.values())
                 cls.helper_users = {}
+            if cls.leech_bots:
+                clients.extend(l_bot.stop() for l_bot in cls.leech_bots.values())
+                cls.leech_bots = {}
             if clients:
                 await gather(*clients, return_exceptions=True)
             LOGGER.info("All Client(s) stopped")
@@ -298,4 +365,6 @@ class TgClient:
                 await gather(
                     *[h_user.restart() for h_user in cls.helper_users.values()]
                 )
+            if cls.leech_bots:
+                await gather(*[l_bot.restart() for l_bot in cls.leech_bots.values()])
             LOGGER.info("All Client(s) restarted")
