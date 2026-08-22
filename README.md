@@ -99,7 +99,7 @@ Deploy with Docker and provide the required configuration values. The container 
    cd CineFlow_WZML-X
    cp config_sample.py config.py
    # Edit config.py with your values
-   docker buildx compose up -d
+   docker compose up -d
    ```
 
    The bot runs behind a Cloudflare quick tunnel by default. Check the tunnel URL:
@@ -113,7 +113,7 @@ Deploy with Docker and provide the required configuration values. The container 
    To stop:
 
    ```bash
-   docker buildx compose down
+   docker compose down
    ```
 </details>
 
@@ -126,7 +126,7 @@ Deploy with Docker and provide the required configuration values. The container 
    4. Start:
 
    ```bash
-   docker buildx compose up -d
+   docker compose up -d
    ```
 
    All traffic (including the cloudflared tunnel) routes through the VPN.
@@ -143,7 +143,7 @@ Deploy with Docker and provide the required configuration values. The container 
    4. Start:
 
    ```bash
-   docker buildx compose up -d
+   dockerkpsmlx compose up -d
    ```
 
    Each bot gets its own cloudflared tunnel URL. Admin ports (qBittorrent, SABnzbd) are mapped to different host ports (`127.0.0.1:8091`, etc.).

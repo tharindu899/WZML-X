@@ -28,7 +28,7 @@ services:
     command: bash start.sh
     restart: unless-stopped
     volumes:
-      - ./config.py:/usr/src/app/config.py:ro
+      - ./config.py:/usr/src/app/config.py
       - ./accounts:/usr/src/app/accounts
       - ./downloads:/usr/src/app/downloads
       - tunnel_data:/data:ro
